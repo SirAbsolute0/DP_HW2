@@ -83,11 +83,13 @@ class CellCounting:
             if(len(region[pair]) >= 15):
                 x = 0
                 y = 0
+                sum_x = 0
+                sum_y = 0
                 for pixel in region[pair]:
-                    x += pixel[0]
-                    y += pixel[1]
-                x = int(x/len(region[pair]))
-                y = int(y/len(region[pair]))
+                    sum_x += pixel[0]
+                    sum_y += pixel[1]
+                x = int(sum_x/len(region[pair]))
+                y = int(sum_y/len(region[pair]))
 
                 statistics.append([pair, len(region[pair]), (x, y)]) #region/cell, area, centeroid
                 
