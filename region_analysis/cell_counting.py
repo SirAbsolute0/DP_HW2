@@ -65,8 +65,7 @@ class CellCounting:
                         if(i in regions.keys()):
                             regions[i].append((x, y))
                         else:
-                            regions.update( {i : [(x, y)]})
-        
+                            regions.update( {i : [(x, y)]})   
         return regions
 
     def compute_statistics(self, region):
@@ -79,22 +78,27 @@ class CellCounting:
         # <region number>: <location or center>, <area>
         # print(stats)
         statistics = []
-        for pair in region:
-            if(len(region[pair]) >= 15):
-                x = 0
-                y = 0
-                sum_x = 0
-                sum_y = 0
-                for pixel in region[pair]:
+        image = np.zeros((254, 256))
+        for key in region:
+            area = len(region[key])
+            
+            x = 0
+            y = 0
+
+            sum_x = 0
+            sum_y = 0
+            if (area >= 15):
+                for pixel in region[key]:
                     sum_x += pixel[0]
                     sum_y += pixel[1]
-                x = int(sum_x/len(region[pair]))
-                y = int(sum_y/len(region[pair]))
-
-                statistics.append([pair, len(region[pair]), (x, y)]) #region/cell, area, centeroid
                 
-                print("Region: " + str(pair) + ", Area: " + str(len(region[pair])) 
-                        + ", Centeroid: (" + str(x) + ", " + str(y) + ")")
+                #Centroid coordinates
+                x = int(sum_x/area)
+                y = int(sum_y/area)
+
+                statistics.append((key, area, (y, x))) #Region key, area, centroid (swapped x, y)
+                print("Region: %a, Area: %s, Centroid: (%g,%d)" %(key, area, x, y))
+
         return statistics
 
     def mark_image_regions(self, image, stats):
@@ -108,6 +112,6 @@ class CellCounting:
         result_img = image.copy()
         font = cv2.FONT_HERSHEY_SIMPLEX
         for pair in stats:
-            result_img = cv2.putText(result_img, str(pair[0]), pair[2], font, 0.25, 125)
+            result_img = cv2.putText(result_img, str(pair[0]) + ", " + str(pair[1]), pair[2], font, 0.25, 125)
         return result_img
 
