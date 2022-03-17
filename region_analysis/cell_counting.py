@@ -18,6 +18,7 @@ class CellCounting:
         for x in range(0, image.shape[0]):
             for y in range(0, image.shape[1]):
                 
+                #Handling edge cases with negative index. Considering them to be default 0
                 if(x == 0):
                     image[x - 1, y] = 0
                 if(y == 0):
@@ -25,16 +26,24 @@ class CellCounting:
                 if(x == 0 and y == 0):
                     image[x - 1, y - 1] = 0
 
+                #          0
+                #Case 1: 0 1
                 if(image[x, y] == 255 and image[x, y - 1] == 0 and image[x - 1, y] == 0):
                     region_img[x, y] = k
                     k += 1
-        
+
+                #          0
+                #Case 2: 1 1
                 elif(image[x, y] == 255 and image[x, y - 1] == 0 and image[x - 1, y] == 255):
                     region_img[x, y] = region_img[x - 1, y]
 
+                #          0
+                #Case 3: 0 1
                 elif(image[x, y] == 255 and image[x, y - 1] == 255 and image[x - 1, y] == 0):
                     region_img[x, y] = region_img[x, y - 1]
 
+                #          1
+                #Case 4: 1 1
                 elif(image[x, y] == 255 and image[x, y - 1] == 255 and image[x - 1, y] == 255):
                     if(region_img[x, y - 1] == region_img[x - 1, y]):
                         region_img[x, y] = region_img[x, y -1]
@@ -48,10 +57,10 @@ class CellCounting:
                                 if(region_img[a, b] == old):
                                     region_img[a, b] = new
 
+        #Adding to dictionaries in term of {region : [pixel1, pixel2]}
         for i in range(1, k + 1):
             for x in range(0, region_img.shape[0]):
                 for y in range(0, region_img.shape[1]):
-                    
                     if(region_img[x, y] == i):
                         if(i in regions.keys()):
                             regions[i].append((x, y))
@@ -82,8 +91,8 @@ class CellCounting:
 
                 statistics.append([pair, len(region[pair]), (x, y)]) #region/cell, area, centeroid
                 
-                #print("Region: " + str(pair) + ", Area: " + str(len(region[pair])) 
-                    #    + ", Centeroid: (" + str(x) + ", " + str(y) + ")")
+                print("Region: " + str(pair) + ", Area: " + str(len(region[pair])) 
+                        + ", Centeroid: (" + str(x) + ", " + str(y) + ")")
         return statistics
 
     def mark_image_regions(self, image, stats):
