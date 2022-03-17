@@ -29,6 +29,7 @@ def main():
     """ The main funtion that parses input arguments, calls the approrpiate
      interpolation method and writes the output image"""
 
+    print("main")
     parser = ArgumentParser()
     parser.add_argument("-i", "--image", dest="image",
                         help="specify the name of the image", metavar="IMAGE")
